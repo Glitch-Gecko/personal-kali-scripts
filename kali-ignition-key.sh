@@ -36,8 +36,8 @@ then
 fi
 
 BLUE "[*] Pimping my kali..."
-git clone https://github.com/Dewalt-arch/pimpmykali.git /home/kali/pimpmykali
-cd /home/kali/pimpmykali
+git clone https://github.com/Dewalt-arch/pimpmykali.git /home/$USER/pimpmykali
+cd /home/$USER/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
 
@@ -125,7 +125,7 @@ BLUE "[*] Installing guessing tools..."
 sudo apt install -y steghide
 sudo gem install zsteg
 sudo -u kali pip3 install -U stegoveritas
-/home/kali/.local/bin/stegoveritas_install_deps
+/home/$USER/.local/bin/stegoveritas_install_deps
 
 BLUE "[*] Installing some lighter forensics tools..."
 sudo -u kali pip3 install -U oletools
@@ -144,7 +144,7 @@ curl https://sliver.sh/install | sudo bash
 
 BLUE "[*] Installing Nim..."
 sudo -u kali curl https://nim-lang.org/choosenim/init.sh -sSf | sh
-echo 'export PATH=/home/kali/.nimble/bin:$PATH' >> /home/kali/.zshrc
+echo 'export PATH=/home/$USER/.nimble/bin:$PATH' >> /home/$USER/.zshrc
 
 YELLOW "Please read!"
 BLUE "   The kali default shell is zsh, which has some minor differences from how bash works."
@@ -153,12 +153,12 @@ read -n1 -p "   Please type Y or N : " userinput
 
 dotfiles(){
 	BLUE "[*] Setting up dotfiles..."
-	cp ./dotfiles/.bash_aliases-kali /home/kali/.bash_aliases
-	cp ./dotfiles/.bashrc-kali /home/kali/.bashrc
-	chown kali:kali /home/kali/.bashrc /home/kali/.bash_aliases
-	echo 'export PATH=/home/kali/.nimble/bin:$PATH' >> /home/kali/.bashrc
-	source /home/kali/.bash_aliases
-	source /home/kali/.bashrc
+	cp ./dotfiles/.bash_aliases-kali /home/$USER/.bash_aliases
+	cp ./dotfiles/.bashrc-kali /home/$USER/.bashrc
+	chown kali:kali /home/$USER/.bashrc /home/$USER/.bash_aliases
+	echo 'export PATH=/home/$USER/.nimble/bin:$PATH' >> /home/$USER/.bashrc
+	source /home/$USER/.bash_aliases
+	source /home/$USER/.bashrc
 }
 
 case $userinput in
@@ -167,8 +167,8 @@ case $userinput in
 	*) RED "[!] Invalid response, keeping zsh...";;
 esac
 
-cp ./dotfiles/.tmux.conf /home/kali/.tmux.conf
-mkdir -p /home/kali/.config/alacritty
-cp ./dotfiles/alacritty.yml /home/kali/.config/alacritty/alacritty.yml
+cp ./dotfiles/.tmux.conf /home/$USER/.tmux.conf
+mkdir -p /home/$USER/.config/alacritty
+cp ./dotfiles/alacritty.yml /home/$USER/.config/alacritty/alacritty.yml
 
 GREEN "[++] All done! Happy hacking! Remember to reboot and login again to see the full changes!"
