@@ -151,14 +151,28 @@ BLUE "   The kali default shell is zsh, which has some minor differences from ho
 BLUE "   If you would like to swap your default shell to bash, please type Y, otherwise, type N"
 read -n1 -p "   Please type Y or N : " userinput
 
+# Comment out any of the following dotfiles to keep current files
 dotfiles(){
 	BLUE "[*] Setting up dotfiles..."
+	# Bash dotfiles
 	cp ./dotfiles/.bash_aliases-kali /home/$USER/.bash_aliases
 	cp ./dotfiles/.bashrc-kali /home/$USER/.bashrc
 	chown kali:kali /home/$USER/.bashrc /home/$USER/.bash_aliases
 	echo 'export PATH=/home/$USER/.nimble/bin:$PATH' >> /home/$USER/.bashrc
 	source /home/$USER/.bash_aliases
 	source /home/$USER/.bashrc
+	
+	# Tmux dotfiles
+	cp ./dotfiles/.tmux.conf /home/$USER/.tmux.conf
+	mkdir /home/$USER/.tmux
+	cp ./dotfiles/left_status.sh /home/$USER/.tmux/left_status.sh
+	cp ./dotfiles/right_status.sh /home/$USER/.tmux/right_status.sh
+	cp ./dotfiles/tmux_setup.sh /home/$USER/.tmux/tmux_setup.sh
+	echo "qterminal -e /home/$USER/.tmux/tmux_setup.sh" >> /etc/crontab
+	
+	# Alacritty dotfiles
+	mkdir -p /home/$USER/.config/alacritty
+	cp ./dotfiles/alacritty.yml /home/$USER/.config/alacritty/alacritty.yml
 }
 
 case $userinput in
@@ -167,8 +181,5 @@ case $userinput in
 	*) RED "[!] Invalid response, keeping zsh...";;
 esac
 
-cp ./dotfiles/.tmux.conf /home/$USER/.tmux.conf
-mkdir -p /home/$USER/.config/alacritty
-cp ./dotfiles/alacritty.yml /home/$USER/.config/alacritty/alacritty.yml
 
 GREEN "[++] All done! Happy hacking! Remember to reboot and login again to see the full changes!"
