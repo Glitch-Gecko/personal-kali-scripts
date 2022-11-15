@@ -105,7 +105,7 @@ cd -
 
 BLUE "[*] Installing pwntools and other binary exploitation tools..."
 sudo -u kali pip3 install -U pwntools ropper
-sudo gem install one_gadget
+sudo gem install one_gadget seccomp-tools
 
 BLUE "[*] Installing codium..."
 wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
@@ -115,6 +115,24 @@ echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https:/
     | sudo tee /etc/apt/sources.list.d/vscodium.list
 sudo apt update
 sudo apt install codium -y
+
+BLUE "[*] Installing various cryptography tools..."
+sudo apt install libgmp-dev libmpc-dev libmpfr-dev
+sudo -u kali pip3 install PyCryptodome gmpy2 pwntools
+sudo docker pull hyperreality/cryptohack:latest
+
+BLUE "[*] Installing guessing tools..."
+sudo apt install -y steghide
+sudo gem install zsteg
+sudo -u kali pip3 install -U stegoveritas
+/home/kali/.local/bin/stegoveritas_install_deps
+
+BLUE "[*] Installing some lighter forensics tools..."
+sudo -u kali pip3 install -U oletools
+sudo -u kali pip3 install -U pyshark
+sudo apt install -y strace ltrace
+wget https://didierstevens.com/files/software/DidierStevensSuite.zip -O /opt/DidierStevensSuite.zip
+chown kali:kali /opt/DidierStevensSuite.zip
 
 BLUE "[*] Installing docker..."
 sudo apt install -y docker.io
