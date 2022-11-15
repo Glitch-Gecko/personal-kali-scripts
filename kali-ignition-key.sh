@@ -171,10 +171,10 @@ function dotfiles(){
         cp ./dotfiles/left_status.sh /home/$user/.tmux/left_status.sh
         cp ./dotfiles/right_status.sh /home/$user/.tmux/right_status.sh
         cp ./dotfiles/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
+	cp ./dotfiles/tmux.desktop /home/$user/.config/autostart/tmux.desktop
 	chmod +x /home/$user/.tmux/left_status.sh
 	chmod +x /home/$user/.tmux/right_status.sh
 	chmod +x /home/$user/.tmux/tmux_setup.sh
-	(crontab -u $user -l; echo "@reboot qterminal -e /home/$user/.tmux/tmux_setup.sh" ) | crontab -u $user -
 	
         # Alacritty dotfiles
         mkdir -p /home/$user/.config/alacritty
