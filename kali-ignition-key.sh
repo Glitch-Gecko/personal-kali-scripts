@@ -182,4 +182,7 @@ case $userinput in
 esac
 
 
-GREEN "[++] All done! Happy hacking! Remember to reboot and login again to see the full changes!"
+GREEN "[++] All done! Happy hacking! Rebooting and removing folder in 5 seconds!"
+sleep 5
+rm -rf ../kali-ignition-key
+reboot
