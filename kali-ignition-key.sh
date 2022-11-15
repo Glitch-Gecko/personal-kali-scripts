@@ -45,6 +45,14 @@ cd /home/$user/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
 
+BLUE "[*] Installing Sublime Text & spotify..."
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add - 
+echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+sudo apt update
+sudo apt install sublime-text spotify-client -y
+
 BLUE "[*] Installing virtualenv..."
 sudo apt install -y virtualenv
 
@@ -121,7 +129,7 @@ sudo apt update
 sudo apt install codium -y
 
 BLUE "[*] Installing various cryptography tools..."
-sudo apt install libgmp-dev libmpc-dev libmpfr-dev
+sudo apt install libgmp-dev libmpc-dev libmpfr-dev -y
 sudo -u kali pip3 install PyCryptodome gmpy2 pwntools
 sudo docker pull hyperreality/cryptohack:latest
 
@@ -159,17 +167,6 @@ sudo apt install -y sshpass
 BLUE "Installing GIMP..."
 sudo apt install -y gimp
 
-BLUE "[*] Installing Sublime Text..."
-wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
-echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-sudo apt-get update
-sudo apt-get install sublime-text -y
-
-BLUE "Installing Spotify..."
-curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add - 
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt-get update && sudo apt-get install spotify-client -y
-
 # Comment out any of the following dotfiles to keep current files
 function dotfiles(){
         BLUE "[*] Setting up dotfiles..."
@@ -188,6 +185,7 @@ function dotfiles(){
         cp ./dotfiles/right_status.sh /home/$user/.tmux/right_status.sh
         cp ./dotfiles/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
 	cp ./dotfiles/tmux.desktop /home/$user/.config/autostart/tmux.desktop
+	sed -i '3 i\Exec=qterminal -e /home/$user/.tmux/tmux_setup.sh' /home/$user/.config/autostart/tmux.desktop
 	chmod +x /home/$user/.tmux/left_status.sh
 	chmod +x /home/$user/.tmux/right_status.sh
 	chmod +x /home/$user/.tmux/tmux_setup.sh
@@ -195,6 +193,10 @@ function dotfiles(){
         # Alacritty dotfiles
         mkdir -p /home/$user/.config/alacritty
         cp ./dotfiles/alacritty.yml /home/$user/.config/alacritty/alacritty.yml
+	
+	# Changing background
+	mv /usr/share/backgrounds/kali-16x9/default /usr/share/backgrounds/kali-16x9/default.original
+	cp Documents/personal-kali-scripts/wallpapers/kali-lincox.png /usr/share/backgrounds/kali-16x9/default
 }
 
 dotfiles
