@@ -1,10 +1,8 @@
 [Desktop Entry]
 Type=Application
-Exec=qterminal -e ~/.tmux/tmux_setup.sh
 Hidden=false
 NoDisplay=false
-X-GNOME-Autostart-enabled=true
-Name[en_NG]=Terminal
 Name=Terminal
-Comment[en_NG]=Start Terminal On Startup with tmux
 Comment=Start Terminal On Startup with tmux
+StartupNotify=false
+Terminal=false
