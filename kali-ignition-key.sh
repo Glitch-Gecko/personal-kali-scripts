@@ -7,6 +7,7 @@ GREEN=`tput bold && tput setaf 2`
 YELLOW=`tput bold && tput setaf 3`
 BLUE=`tput bold && tput setaf 4`
 NC=`tput sgr0`
+user=$(who | awk 'NR==1{print $1}')
 
 function RED(){
 	echo -e "\n${RED}${1}${NC}"
@@ -35,9 +36,11 @@ then
 	exit
 fi
 
+who am i | awk '{print $1}'
+
 BLUE "[*] Pimping my kali..."
-git clone https://github.com/Dewalt-arch/pimpmykali.git /home/$USER/pimpmykali
-cd /home/$USER/pimpmykali
+git clone https://github.com/Dewalt-arch/pimpmykali.git /home/$user/pimpmykali
+cd /home/$user/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
 
@@ -125,7 +128,7 @@ BLUE "[*] Installing guessing tools..."
 sudo apt install -y steghide
 sudo gem install zsteg
 sudo -u kali pip3 install -U stegoveritas
-/home/$USER/.local/bin/stegoveritas_install_deps
+/home/$user/.local/bin/stegoveritas_install_deps
 
 BLUE "[*] Installing some lighter forensics tools..."
 sudo -u kali pip3 install -U oletools
@@ -144,45 +147,43 @@ curl https://sliver.sh/install | sudo bash
 
 BLUE "[*] Installing Nim..."
 sudo -u kali curl https://nim-lang.org/choosenim/init.sh -sSf | sh
-echo 'export PATH=/home/$USER/.nimble/bin:$PATH' >> /home/$USER/.zshrc
+echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.zshrc
 
-YELLOW "Please read!"
-BLUE "   The kali default shell is zsh, which has some minor differences from how bash works."
-BLUE "   If you would like to swap your default shell to bash, please type Y, otherwise, type N"
-read -n1 -p "   Please type Y or N : " userinput
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+sudo apt-get update
+sudo apt-get install sublime-text
 
 # Comment out any of the following dotfiles to keep current files
-dotfiles(){
-	BLUE "[*] Setting up dotfiles..."
-	# Bash dotfiles
-	cp ./dotfiles/.bash_aliases-kali /home/$USER/.bash_aliases
-	cp ./dotfiles/.bashrc-kali /home/$USER/.bashrc
-	chown kali:kali /home/$USER/.bashrc /home/$USER/.bash_aliases
-	echo 'export PATH=/home/$USER/.nimble/bin:$PATH' >> /home/$USER/.bashrc
-	source /home/$USER/.bash_aliases
-	source /home/$USER/.bashrc
+function dotfiles(){
+        BLUE "[*] Setting up dotfiles..."
+        # Bash dotfiles
+        cp ./dotfiles/.bash_aliases-kali /home/$user/.bash_aliases
+        cp ./dotfiles/.bashrc-kali /home/$user/.bashrc
+        chown kali:kali /home/$user/.bashrc /home/$user/.bash_aliases
+        echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.bashrc
+        source /home/$user/.bash_aliases
+        source /home/$user/.bashrc
+        
+        # Tmux dotfiles
+        cp ./dotfiles/.tmux.conf /home/$user/.tmux.conf
+        mkdir /home/$user/.tmux
+        cp ./dotfiles/left_status.sh /home/$user/.tmux/left_status.sh
+        cp ./dotfiles/right_status.sh /home/$user/.tmux/right_status.sh
+        cp ./dotfiles/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
+	chmod +x /home/$user/.tmux/left_status.sh
+	chmod +x /home/$user/.tmux/right_status.sh
+	chmod +x /home/$user/.tmux/tmux_setup.sh
+	(crontab -u $user -l; echo "@reboot qterminal -e /home/$user/.tmux/tmux_setup.sh" ) | crontab -u $user -
 	
-	# Tmux dotfiles
-	cp ./dotfiles/.tmux.conf /home/$USER/.tmux.conf
-	mkdir /home/$USER/.tmux
-	cp ./dotfiles/left_status.sh /home/$USER/.tmux/left_status.sh
-	cp ./dotfiles/right_status.sh /home/$USER/.tmux/right_status.sh
-	cp ./dotfiles/tmux_setup.sh /home/$USER/.tmux/tmux_setup.sh
-	echo "qterminal -e /home/$USER/.tmux/tmux_setup.sh" >> /etc/crontab
-	
-	# Alacritty dotfiles
-	mkdir -p /home/$USER/.config/alacritty
-	cp ./dotfiles/alacritty.yml /home/$USER/.config/alacritty/alacritty.yml
+        # Alacritty dotfiles
+        mkdir -p /home/$user/.config/alacritty
+        cp ./dotfiles/alacritty.yml /home/$user/.config/alacritty/alacritty.yml
 }
 
-case $userinput in
-	y|Y) BLUE "[*] Swapping to bash..."; chsh -s /bin/bash kali; dotfiles  ;;
-	n|N) BLUE "[*] Sticking to zsh..." ;;
-	*) RED "[!] Invalid response, keeping zsh...";;
-esac
+dotfiles
 
-
-GREEN "[++] All done! Happy hacking! Rebooting and removing folder in 5 seconds!"
+GREEN "[++] All done! Happy hacking! Rebooting in 5 seconds and deleting files!"
 sleep 5
-rm -rf ../kali-ignition-key
+rm ../personal-kali-scripts -rf
 reboot
