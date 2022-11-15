@@ -153,6 +153,9 @@ echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.zshrc
 BLUE "Installing pdfcrack..."
 sudo apt install -y pdfcrack
 
+BLUE "Installing sshpass..."
+sudo apt install -y sshpass
+
 BLUE "Installing GIMP..."
 sudo apt install -y gimp
 
