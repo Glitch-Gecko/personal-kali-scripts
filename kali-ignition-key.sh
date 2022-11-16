@@ -8,6 +8,7 @@ YELLOW=`tput bold && tput setaf 3`
 BLUE=`tput bold && tput setaf 4`
 NC=`tput sgr0`
 user=$(who | awk 'NR==1{print $1}')
+cd "${0%/*}"
 
 function RED(){
 	echo -e "\n${RED}${1}${NC}"
@@ -29,7 +30,8 @@ then
 	exit
 fi
 
-distro=$(uname -a | grep -i -c "kali") # distro check
+distro=$(uname -a | grep -i -c "
+") # distro check
 if [ $distro -ne 1 ]
 then 
 	RED "[!] Kali Linux Not Detected - This script will not work with anything other than Kali!" && echo
@@ -57,7 +59,7 @@ BLUE "[*] Installing virtualenv..."
 sudo apt install -y virtualenv
 
 BLUE "[*] Installing pyftpdlib..."
-sudo -u kali pip3 install -U pyftpdlib 
+sudo -u $user pip3 install -U pyftpdlib 
 
 BLUE "[*] Installing xclip..."
 sudo apt install -y xclip
@@ -77,7 +79,7 @@ BLUE "[*] Getting enum4linux-ng..."
 git clone https://github.com/cddmp/enum4linux-ng.git /opt/enum4linux-ng
 
 BLUE "[*] Installing rustscan..."
-sudo apt install -y rustscan
+wget https://github.com/RustScan/RustScan/releases/download/2.0.1/rustscan_2.0.1_amd64.deb && sudo dpkg -i rustscan_2.0.1_amd64.deb && sudo rm -f rustscan_2.0.1_amd64.deb
 
 BLUE "[*] Installing ffuf..."
 sudo apt install -y ffuf
@@ -88,7 +90,7 @@ sudo apt install -y feroxbuster
 BLUE "[*] Installing Bloodhound..."
 sudo apt install -y bloodhound
 sudo apt install -y neo4j
-sudo -u kali pip3 install -U bloodhound
+sudo -u $user pip3 install -U bloodhound
 
 BLUE "[*] Installing seclists..."
 sudo apt install -y seclists
@@ -98,13 +100,22 @@ sudo apt install -y gdb
 
 BLUE "[*] Installing pwndbg..."
 git clone https://github.com/pwndbg/pwndbg /opt/pwndbg
-chown -R kali:kali /opt/pwndbg
+chown -R $user /opt/pwndbg
 cd /opt/pwndbg
 ./setup.sh
 cd -
 
 BLUE "[*] Installing ghidra..."
 sudo apt install -y ghidra
+
+BLUE "Installing pdfcrack..."
+sudo apt install -y pdfcrack
+
+BLUE "Installing sshpass..."
+sudo apt install -y sshpass
+
+BLUE "Installing GIMP..."
+sudo apt install -y gimp
 
 BLUE "[*] Installing AutoRecon..."
 git clone https://github.com/Tib3rius/AutoRecon.git /opt/AutoRecon
@@ -116,7 +127,7 @@ deactivate
 cd -
 
 BLUE "[*] Installing pwntools and other binary exploitation tools..."
-sudo -u kali pip3 install -U pwntools ropper
+sudo -u $user pip3 install -U pwntools ropper
 sudo gem install one_gadget seccomp-tools
 
 BLUE "[*] Installing codium..."
@@ -128,52 +139,45 @@ echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https:/
 sudo apt update
 sudo apt install codium -y
 
-BLUE "[*] Installing various cryptography tools..."
-sudo apt install libgmp-dev libmpc-dev libmpfr-dev -y
-sudo -u kali pip3 install PyCryptodome gmpy2 pwntools
-sudo docker pull hyperreality/cryptohack:latest
-
 BLUE "[*] Installing guessing tools..."
 sudo apt install -y steghide
 sudo gem install zsteg
-sudo -u kali pip3 install -U stegoveritas
+sudo -u $user pip3 install -U stegoveritas
 /home/$user/.local/bin/stegoveritas_install_deps
 
 BLUE "[*] Installing some lighter forensics tools..."
-sudo -u kali pip3 install -U oletools
-sudo -u kali pip3 install -U pyshark
+sudo -u $user pip3 install -U oletools
+sudo -u $user pip3 install -U pyshark
 sudo apt install -y strace ltrace
 wget https://didierstevens.com/files/software/DidierStevensSuite.zip -O /opt/DidierStevensSuite.zip
-chown kali:kali /opt/DidierStevensSuite.zip
-
-BLUE "[*] Installing docker..."
-sudo apt install -y docker.io
-sudo systemctl enable docker --now
-sudo usermod -aG docker kali
+chown $user /opt/DidierStevensSuite.zip
 
 BLUE "[*] Installing sliver..."
 curl https://sliver.sh/install | sudo bash
 
 BLUE "[*] Installing Nim..."
-sudo -u kali curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+sudo -u $user curl https://nim-lang.org/choosenim/init.sh -sSf | sh
 echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.zshrc
 
-BLUE "Installing pdfcrack..."
-sudo apt install -y pdfcrack
 
-BLUE "Installing sshpass..."
-sudo apt install -y sshpass
+BLUE "[*] Installing various cryptography tools..."
+sudo apt install libgmp-dev libmpc-dev libmpfr-dev -y
+sudo -u $user pip3 install PyCryptodome gmpy2 pwntools
 
-BLUE "Installing GIMP..."
-sudo apt install -y gimp
+BLUE "[*] Installing docker..."
+sudo apt install -y docker.io
+sudo systemctl enable docker --now
+sudo usermod -aG docker $user
+
+BLUE "[*] Installing various cryptography tools pt 2..."
+sudo docker pull hyperreality/cryptohack:latest
 
 # Comment out any of the following dotfiles to keep current files
 function dotfiles(){
-        BLUE "[*] Setting up dotfiles..."
         # Bash dotfiles
         cp ./dotfiles/.bash_aliases-kali /home/$user/.bash_aliases
         cp ./dotfiles/.bashrc-kali /home/$user/.bashrc
-        chown kali:kali /home/$user/.bashrc /home/$user/.bash_aliases
+        chown $user /home/$user/.bashrc /home/$user/.bash_aliases
         echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.bashrc
         source /home/$user/.bash_aliases
         source /home/$user/.bashrc
@@ -185,7 +189,7 @@ function dotfiles(){
         cp ./dotfiles/right_status.sh /home/$user/.tmux/right_status.sh
         cp ./dotfiles/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
 	cp ./dotfiles/tmux.desktop /home/$user/.config/autostart/tmux.desktop
-	sed -i '3 i\Exec=qterminal -e /home/$user/.tmux/tmux_setup.sh' /home/$user/.config/autostart/tmux.desktop
+	sed -i "3 i\Exec=qterminal -e /home/$user/.tmux/tmux_setup.sh" /home/$user/.config/autostart/tmux.desktop
 	chmod +x /home/$user/.tmux/left_status.sh
 	chmod +x /home/$user/.tmux/right_status.sh
 	chmod +x /home/$user/.tmux/tmux_setup.sh
@@ -196,7 +200,7 @@ function dotfiles(){
 	
 	# Changing background
 	mv /usr/share/backgrounds/kali-16x9/default /usr/share/backgrounds/kali-16x9/default.original
-	cp Documents/personal-kali-scripts/wallpapers/kali-lincox.png /usr/share/backgrounds/kali-16x9/default
+	cp ./wallpapers/kali-lincox.png /usr/share/backgrounds/kali-16x9/default
 }
 
 dotfiles
