@@ -42,7 +42,7 @@ BLUE "Updating repositories..."
 sudo apt install -y git
 
 BLUE "[*] Pimping my kali..."
-git clone https://github.com/Dewalt-arch/pimpmykali.git /home/$user/pimpmykali
+git clone https://github.com/An00bRektn/pimpmykali /home/$user/pimpmykali
 cd /home/$user/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
