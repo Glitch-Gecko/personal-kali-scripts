@@ -30,8 +30,7 @@ then
 	exit
 fi
 
-distro=$(uname -a | grep -i -c "
-") # distro check
+distro=$(uname -a | grep -i -c "kali") # distro check
 if [ $distro -ne 1 ]
 then 
 	RED "[!] Kali Linux Not Detected - This script will not work with anything other than Kali!" && echo
@@ -39,6 +38,7 @@ then
 fi
 
 BLUE "Updating repositories..."
+sudo apt update
 sudo apt install -y git
 
 BLUE "[*] Pimping my kali..."
@@ -47,19 +47,21 @@ cd /home/$user/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
 
-BLUE "[*] Installing Sublime Text & spotify..."
+BLUE "[*] Installing NVIM"
+sudo apt install -y neovim
+
+BLUE "[*] Installing Sublime Text..."
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
 echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add - 
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt update
-sudo apt install sublime-text spotify-client -y
 
 BLUE "[*] Installing virtualenv..."
 sudo apt install -y virtualenv
 
+BLUE "[*] Installing pipx..."
+sudo apt install -y pipx
+
 BLUE "[*] Installing pyftpdlib..."
-sudo -u $user pip3 install -U pyftpdlib 
+sudo -u $user pip3 install -U pyftpdlib
 
 BLUE "[*] Installing xclip..."
 sudo apt install -y xclip
@@ -90,7 +92,6 @@ sudo apt install -y feroxbuster
 BLUE "[*] Installing Bloodhound..."
 sudo apt install -y bloodhound
 sudo apt install -y neo4j
-sudo -u $user pip3 install -U bloodhound
 
 BLUE "[*] Installing seclists..."
 sudo apt install -y seclists
@@ -201,6 +202,13 @@ function dotfiles(){
 	# Changing background
 	mv /usr/share/backgrounds/kali-16x9/default /usr/share/backgrounds/kali-16x9/default.original
 	cp ./wallpapers/kali-lincox.png /usr/share/backgrounds/kali-16x9/default
+
+	# NVIM dotfiles
+	cp ./dotfiles/nvim /home/$user/.config -r
+
+	# ZSH dotfiles
+	rm /home/$user/.zshrc
+	cp ./dotfiles/.zshrc /home/$user
 }
 
 dotfiles
