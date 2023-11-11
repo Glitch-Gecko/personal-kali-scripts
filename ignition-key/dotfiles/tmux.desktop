@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Hidden=false
-NoDisplay=false
-Name=Terminal
-Comment=Start Terminal On Startup with tmux
-StartupNotify=false
-Terminal=false
