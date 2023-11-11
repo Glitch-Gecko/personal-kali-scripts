@@ -47,8 +47,15 @@ cd /home/$user/pimpmykali
 sudo ./pimpmykali.sh --all
 cd -
 
-BLUE "[*] Installing NVIM"
-sudo apt install -y neovim
+BLUE "[*] Installing NVIM and packer.nvim"
+# NVIM
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+mv nvim.appimage /bin/nvim
+
+# packer.nvim
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 
 BLUE "[*] Installing Sublime Text..."
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
