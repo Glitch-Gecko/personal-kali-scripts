@@ -182,40 +182,45 @@ sudo docker pull hyperreality/cryptohack:latest
 
 # Comment out any of the following dotfiles to keep current files
 function dotfiles(){
-        # Bash dotfiles
-        cp ./dotfiles/.bash_aliases-kali /home/$user/.bash_aliases
-        cp ./dotfiles/.bashrc-kali /home/$user/.bashrc
-        chown $user /home/$user/.bashrc /home/$user/.bash_aliases
-        echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.bashrc
-        source /home/$user/.bash_aliases
-        source /home/$user/.bashrc
-        
-        # Tmux dotfiles
-        cp ./dotfiles/.tmux.conf /home/$user/.tmux.conf
-        mkdir /home/$user/.tmux
-        cp ./dotfiles/left_status.sh /home/$user/.tmux/left_status.sh
-        cp ./dotfiles/right_status.sh /home/$user/.tmux/right_status.sh
-        cp ./dotfiles/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
-	cp ./dotfiles/tmux.desktop /home/$user/.config/autostart/tmux.desktop
-	sed -i "3 i\Exec=qterminal -e /home/$user/.tmux/tmux_setup.sh" /home/$user/.config/autostart/tmux.desktop
-	chmod +x /home/$user/.tmux/left_status.sh
-	chmod +x /home/$user/.tmux/right_status.sh
-	chmod +x /home/$user/.tmux/tmux_setup.sh
-	
-        # Alacritty dotfiles
-        mkdir -p /home/$user/.config/alacritty
-        cp ./dotfiles/alacritty.yml /home/$user/.config/alacritty/alacritty.yml
+    git clone https://github.com/Glitch-Gecko/configs.git
+    cd configs/dotfiles
+
+    # Bash dotfiles
+    cp ./kali/.bash_aliases-kali /home/$user/.bash_aliases
+    cp ./kali/.bashrc-kali /home/$user/.bashrc
+    chown $user /home/$user/.bashrc /home/$user/.bash_aliases
+    echo 'export PATH=/home/$user/.nimble/bin:$PATH' >> /home/$user/.bashrc
+    source /home/$user/.bash_aliases
+    source /home/$user/.bashrc
+    
+    # Tmux dotfiles
+    cp ./tmux/.tmux.conf /home/$user/.tmux.conf
+    mkdir /home/$user/.tmux
+    cp ./tmux/left_status.sh /home/$user/.tmux/left_status.sh
+    cp ./tmux/right_status.sh /home/$user/.tmux/right_status.sh
+    cp ./tmux/tmux_setup.sh /home/$user/.tmux/tmux_setup.sh
+    cp ./tmux/tmux.desktop /home/$user/.config/autostart/tmux.desktop
+    sed -i "3 i\Exec=qterminal -e /home/$user/.tmux/tmux_setup.sh" /home/$user/.config/autostart/tmux.desktop
+    chmod +x /home/$user/.tmux/left_status.sh
+    chmod +x /home/$user/.tmux/right_status.sh
+    chmod +x /home/$user/.tmux/tmux_setup.sh
+
+    # Alacritty dotfiles
+    cp ./alacritty /home/$user/.config -r
 	
 	# Changing background
 	mv /usr/share/backgrounds/kali-16x9/default /usr/share/backgrounds/kali-16x9/default.original
 	cp ./wallpapers/kali-lincox.png /usr/share/backgrounds/kali-16x9/default
 
 	# NVIM dotfiles
-	cp ./dotfiles/nvim /home/$user/.config -r
+	cp ./nvim /home/$user/.config -r
 
 	# ZSH dotfiles
 	rm /home/$user/.zshrc
-	cp ./dotfiles/.zshrc /home/$user
+	cp ./kali/.zshrc /home/$user
+
+    cd ../..
+    rm -rf configs
 }
 
 dotfiles
