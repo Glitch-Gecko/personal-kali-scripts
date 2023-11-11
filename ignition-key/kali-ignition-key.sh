@@ -227,5 +227,5 @@ dotfiles
 
 GREEN "[++] All done! Happy hacking! Rebooting in 5 seconds and deleting files!"
 sleep 5
-rm ../personal-kali-scripts -rf
+rm ../../personal-kali-scripts -rf
 reboot
